@@ -18,7 +18,7 @@ func (r *InMemoryServicoRepository) PegandoPeloId(id uint) (servico.Servico, err
 	novoSlice := append(r.Servicos, servico.Servico{Nome: "TESTE DANIEL"})
 
 	if (int(id) + 1) > len(novoSlice) {
-		return servico.Servico{}, errors.New("Serivoco nao encontrado")
+		return servico.Servico{}, errors.New("Servico nao encontrado")
 	}
 	s := novoSlice[id]
 	return s, nil
