@@ -7,13 +7,13 @@ const (
 )
 
 type Status struct {
-	id   uint
+	Id   uint
 	nome string
 }
 
-func NovoStatus() *Status {
-	return &Status{
-		id:   SolicitacaoIniciada,
+func NovoStatus() Status {
+	return Status{
+		Id:   SolicitacaoIniciada,
 		nome: "Solicitacao enviada",
 	}
 }
