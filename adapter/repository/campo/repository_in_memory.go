@@ -15,6 +15,6 @@ func (r *InMemoryCampoRepository) BuscarCampoPeloSolicitanteId(
 	solicitanteId uint,
 ) ([]campo.Campo, error) {
 	var campos []campo.Campo
-	campos = append(campos, *campo.NovoCampo(1, "TESTE", 2))
+	campos = append(campos, *campo.NovoCampo(1, "TESTE", solicitanteId))
 	return campos, nil
 }
