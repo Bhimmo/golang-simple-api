@@ -23,22 +23,22 @@ func NovoSalvarSolicitacao(
 }
 
 func (s *SalvarSolicitacaoUseCase) Execute(input SalvarSolicitacaoInput) (*solicitacao.Solicitacao, error) {
-	servico, errServico := s.repositoryServico.PegandoPeloId(input.ServicoId)
+	servicoBusca, errServico := s.repositoryServico.PegandoPeloId(input.ServicoId)
 	if errServico != nil {
 		return nil, errors.New("Erro em encontrar servico")
 	}
-	status := status.NovoStatus()
+	newStatus := status.NovoStatus()
 
-	solicitacao := solicitacao.NovaSolicitacao(servico, status, false, input.SolicitanteId)
+	newSolicitacao := solicitacao.NovaSolicitacao(servicoBusca, newStatus, false, input.SolicitanteId)
 
 	errSalvarSolicitacao := s.repositorySolicitacao.Salvar(
-		solicitacao.PegandoIdDoServicoDaSolicitacao(),
-		solicitacao.PegandoIdDoStatusDaSolicitacao(),
+		newSolicitacao.PegandoIdDoServicoDaSolicitacao(),
+		newSolicitacao.PegandoIdDoStatusDaSolicitacao(),
 	)
 
 	if errSalvarSolicitacao != nil {
 		return nil, errors.New("Erro em salvar solicitacao")
 	}
 
-	return solicitacao, nil
+	return newSolicitacao, nil
 }
