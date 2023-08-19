@@ -6,15 +6,24 @@ import (
 )
 
 type Solicitacao struct {
-	id      uint
-	servico servico.Servico
-	status  status.Status
+	id            uint
+	servico       servico.Servico
+	status        status.Status
+	concluida     bool
+	solicitanteId uint
 }
 
-func NovaSolicitacao(servicoInput servico.Servico, statusInput status.Status) *Solicitacao {
+func NovaSolicitacao(
+	servicoInput servico.Servico,
+	statusInput status.Status,
+	concluida bool,
+	solicitanteId uint,
+) *Solicitacao {
 	return &Solicitacao{
-		servico: servicoInput,
-		status:  statusInput,
+		servico:       servicoInput,
+		status:        statusInput,
+		concluida:     concluida,
+		solicitanteId: solicitanteId,
 	}
 }
 
@@ -23,4 +32,7 @@ func (s *Solicitacao) PegandoIdDoServicoDaSolicitacao() uint {
 }
 func (s *Solicitacao) PegandoIdDoStatusDaSolicitacao() uint {
 	return s.status.Id
+}
+func (s *Solicitacao) VerificacaoSeEstaConcluida() bool {
+	return s.concluida
 }

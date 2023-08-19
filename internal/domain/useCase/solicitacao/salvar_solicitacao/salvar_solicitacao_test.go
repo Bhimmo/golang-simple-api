@@ -18,9 +18,29 @@ func TestNovoSalvarSolicitacao(t *testing.T) {
 	rs := servico.InMemoryServicoRepository{}
 
 	useCase := salvar_solicitacao.NovoSalvarSolicitacao(&r, &rs)
-	errSolicitacao := useCase.Execute(input)
+	_, errSolicitacao := useCase.Execute(input)
 
 	if errSolicitacao != nil {
 		t.Errorf(error.Error(errSolicitacao))
+	}
+}
+
+func TestSalvarSolcitacaoNaoPodeEstarConcluido(t *testing.T) {
+	input := salvar_solicitacao.SalvarSolicitacaoInput{
+		ServicoId:     0,
+		SolicitanteId: 123,
+		Campos:        []campo.Campo{{Id: uint(1), Valor: "Nao gostei do atendimento"}},
+	}
+	r := solicitacao.InMemorySolicitacaoRepository{}
+	rs := servico.InMemoryServicoRepository{}
+
+	useCase := salvar_solicitacao.NovoSalvarSolicitacao(&r, &rs)
+	s, errSolicitacao := useCase.Execute(input)
+
+	if errSolicitacao != nil {
+		t.Errorf(error.Error(errSolicitacao))
+	}
+	if s.VerificacaoSeEstaConcluida() != false {
+		t.Errorf("Solicitacao esta concluida na criacao")
 	}
 }
