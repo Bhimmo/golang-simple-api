@@ -1,6 +1,7 @@
 package salvar_solicitacao_test
 
 import (
+	campoRepo "github.com/Bhimmo/golang-simple-api/adapter/repository/campo"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/servico"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/solicitacao"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/campo"
@@ -16,12 +17,16 @@ func TestNovoSalvarSolicitacao(t *testing.T) {
 	}
 	r := solicitacao.InMemorySolicitacaoRepository{}
 	rs := servico.InMemoryServicoRepository{}
+	rc := campoRepo.InMemoryCampoRepository{}
 
-	useCase := salvar_solicitacao.NovoSalvarSolicitacao(&r, &rs)
-	_, errSolicitacao := useCase.Execute(input)
+	useCase := salvar_solicitacao.NovoSalvarSolicitacao(&r, &rs, &rc)
+	s, errSolicitacao := useCase.Execute(input)
 
 	if errSolicitacao != nil {
 		t.Errorf(error.Error(errSolicitacao))
+	}
+	if s.PegandoId() != 1 {
+		t.Errorf("Id nao encluso")
 	}
 }
 
@@ -33,8 +38,9 @@ func TestSalvarSolcitacaoNaoPodeEstarConcluido(t *testing.T) {
 	}
 	r := solicitacao.InMemorySolicitacaoRepository{}
 	rs := servico.InMemoryServicoRepository{}
+	rc := campoRepo.InMemoryCampoRepository{}
 
-	useCase := salvar_solicitacao.NovoSalvarSolicitacao(&r, &rs)
+	useCase := salvar_solicitacao.NovoSalvarSolicitacao(&r, &rs, &rc)
 	s, errSolicitacao := useCase.Execute(input)
 
 	if errSolicitacao != nil {
@@ -44,3 +50,5 @@ func TestSalvarSolcitacaoNaoPodeEstarConcluido(t *testing.T) {
 		t.Errorf("Solicitacao esta concluida na criacao")
 	}
 }
+
+func TestSalvarSolicitacaoOsCamposEstaoSendoSalvos(t *testing.T) {}

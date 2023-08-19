@@ -27,6 +27,12 @@ func NovaSolicitacao(
 	}
 }
 
+func (s *Solicitacao) SetandoId(id uint) {
+	s.id = id
+}
+func (s *Solicitacao) PegandoId() uint {
+	return s.id
+}
 func (s *Solicitacao) PegandoIdDoServicoDaSolicitacao() uint {
 	return s.servico.Id
 }
@@ -35,4 +41,7 @@ func (s *Solicitacao) PegandoIdDoStatusDaSolicitacao() uint {
 }
 func (s *Solicitacao) VerificacaoSeEstaConcluida() bool {
 	return s.concluida
+}
+func (s *Solicitacao) PegandoSolicitanteId() uint {
+	return s.solicitanteId
 }

@@ -1,12 +1,18 @@
 package solicitacao
 
 type InMemorySolicitacaoRepository struct {
-	Solicitacao [][]uint
+	Solicitacao []any
 }
 
-func (r *InMemorySolicitacaoRepository) Salvar(servicoId uint, statusId uint) error {
-	maps := []uint{servicoId, statusId}
-	_ = append(r.Solicitacao, maps)
-
-	return nil
+func (r *InMemorySolicitacaoRepository) Salvar(
+	servicoId uint,
+	statusId uint,
+	concluida bool,
+	solicitanteId uint,
+) (uint, error) {
+	itemSalvar := map[uint][]any{
+		1: {servicoId, statusId, concluida, solicitanteId},
+	}
+	r.Solicitacao = append(r.Solicitacao, itemSalvar)
+	return 1, nil
 }
