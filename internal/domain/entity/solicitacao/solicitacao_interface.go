@@ -7,4 +7,6 @@ type InterfaceSolicitacaoRepository interface {
 		concluida bool,
 		solicitanteId uint,
 	) (uint, error)
+
+	BuscarPeloId(id uint) (Solicitacao, error)
 }

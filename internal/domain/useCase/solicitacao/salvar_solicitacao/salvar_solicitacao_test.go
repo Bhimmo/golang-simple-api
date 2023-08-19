@@ -50,5 +50,3 @@ func TestSalvarSolcitacaoNaoPodeEstarConcluido(t *testing.T) {
 		t.Errorf("Solicitacao esta concluida na criacao")
 	}
 }
-
-func TestSalvarSolicitacaoOsCamposEstaoSendoSalvos(t *testing.T) {}
