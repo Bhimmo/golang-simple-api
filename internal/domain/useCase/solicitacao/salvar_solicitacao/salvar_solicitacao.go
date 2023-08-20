@@ -26,11 +26,11 @@ func NovoSalvarSolicitacao(
 	}
 }
 
-func (s *SalvarSolicitacaoUseCase) Execute(input SalvarSolicitacaoInput) (*solicitacao.Solicitacao, error) {
+func (s *SalvarSolicitacaoUseCase) Execute(input SalvarSolicitacaoInput) (SalvarSolicitacaoOutput, error) {
 	//Servico
 	servicoBusca, errServico := s.repositoryServico.PegandoPeloId(input.ServicoId)
 	if errServico != nil {
-		return nil, errors.New("Erro em encontrar servico")
+		return SalvarSolicitacaoOutput{}, errors.New("Erro em encontrar servico")
 	}
 	//Status
 	newStatus := status.NovoStatus()
@@ -49,7 +49,7 @@ func (s *SalvarSolicitacaoUseCase) Execute(input SalvarSolicitacaoInput) (*solic
 		newSolicitacao.PegandoSolicitanteId(),
 	)
 	if errSalvarSolicitacao != nil {
-		return nil, errors.New("Erro em salvar solicitacao")
+		return SalvarSolicitacaoOutput{}, errors.New("Erro em salvar solicitacao")
 	}
 
 	newSolicitacao.SetandoId(idSolicitacao)
@@ -58,9 +58,15 @@ func (s *SalvarSolicitacaoUseCase) Execute(input SalvarSolicitacaoInput) (*solic
 		newCampo := campo.NovoCampo(itemCampo.Id, itemCampo.Valor, newSolicitacao.PegandoId())
 		errCampo := s.repositoryCampo.Salvar(*newCampo)
 		if errCampo != nil {
-			return nil, errors.New("Erro em salvar campos")
+			return SalvarSolicitacaoOutput{}, errors.New("Erro em salvar campos")
 		}
 	}
 
-	return newSolicitacao, nil
+	return SalvarSolicitacaoOutput{
+		Id:            newSolicitacao.PegandoId(),
+		Concluida:     newSolicitacao.VerificacaoSeEstaConcluida(),
+		SolicitanteId: newSolicitacao.PegandoSolicitanteId(),
+		ServicoId:     newSolicitacao.PegandoIdDoServicoDaSolicitacao(),
+		Campos:        input.Campos,
+	}, nil
 }

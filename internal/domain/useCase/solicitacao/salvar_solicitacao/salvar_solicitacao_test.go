@@ -4,7 +4,6 @@ import (
 	campoRepo "github.com/Bhimmo/golang-simple-api/adapter/repository/campo"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/servico"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/solicitacao"
-	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/salvar_solicitacao"
 	"testing"
 )
@@ -13,8 +12,14 @@ func TestNovoSalvarSolicitacao(t *testing.T) {
 	input := salvar_solicitacao.SalvarSolicitacaoInput{
 		ServicoId:     0,
 		SolicitanteId: 123,
-		Campos:        []campo.Campo{{Id: uint(1), Valor: "Nao gostei do servico"}},
+		Campos: []struct {
+			Id    uint   `json:"id"`
+			Valor string `json:"valor"`
+		}{
+			{Id: 1, Valor: "teste"},
+		},
 	}
+
 	r := solicitacao.InMemorySolicitacaoRepository{}
 	rs := servico.InMemoryServicoRepository{}
 	rc := campoRepo.InMemoryCampoRepository{}
@@ -25,7 +30,7 @@ func TestNovoSalvarSolicitacao(t *testing.T) {
 	if errSolicitacao != nil {
 		t.Errorf(error.Error(errSolicitacao))
 	}
-	if s.PegandoId() != 1 {
+	if s.Id != 1 {
 		t.Errorf("Id nao encluso")
 	}
 }
@@ -34,7 +39,12 @@ func TestSalvarSolcitacaoNaoPodeEstarConcluido(t *testing.T) {
 	input := salvar_solicitacao.SalvarSolicitacaoInput{
 		ServicoId:     0,
 		SolicitanteId: 123,
-		Campos:        []campo.Campo{{Id: uint(1), Valor: "Nao gostei do servico"}},
+		Campos: []struct {
+			Id    uint   `json:"id"`
+			Valor string `json:"valor"`
+		}{
+			{Id: 1, Valor: "teste"},
+		},
 	}
 	r := solicitacao.InMemorySolicitacaoRepository{}
 	rs := servico.InMemoryServicoRepository{}
@@ -46,7 +56,7 @@ func TestSalvarSolcitacaoNaoPodeEstarConcluido(t *testing.T) {
 	if errSolicitacao != nil {
 		t.Errorf(error.Error(errSolicitacao))
 	}
-	if s.VerificacaoSeEstaConcluida() != false {
+	if s.Concluida != false {
 		t.Errorf("Solicitacao esta concluida na criacao")
 	}
 }

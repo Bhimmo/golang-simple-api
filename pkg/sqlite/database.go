@@ -20,7 +20,7 @@ func generateBaseDados() {
 	//Generate tables
 	_, errServico := Db.Exec("CREATE TABLE IF NOT EXISTS servico (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT)")
 	_, errSolicitacao := Db.Exec("CREATE TABLE IF NOT EXISTS solicitacao (id INTEGER PRIMARY KEY AUTOINCREMENT, servicoId INTEGER, statusId INTEGER, concluida INTEGER, solicitanteId INTEGER)")
-	_, errCampo := Db.Exec("CREATE TABLE IF NOT EXISTS campo (id INTEGER PRIMARY KEY AUTOINCREMENT, valor TEXT, solicitanteId INTEGER)")
+	_, errCampo := Db.Exec("CREATE TABLE IF NOT EXISTS campo (id INTEGER PRIMARY KEY AUTOINCREMENT, valor TEXT, solicitacaoId INTEGER)")
 
 	errorDb(errServico)
 	errorDb(errSolicitacao)

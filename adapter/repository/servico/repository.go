@@ -6,15 +6,15 @@ import (
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/servico"
 )
 
-type repositoryServico struct {
+type RepositoryServico struct {
 	db *sql.DB
 }
 
-func NovoRepositoryServico(database *sql.DB) *repositoryServico {
-	return &repositoryServico{db: database}
+func NovoRepositoryServico(database *sql.DB) *RepositoryServico {
+	return &RepositoryServico{db: database}
 }
 
-func (r *repositoryServico) Inserir(nome string) (uint, error) {
+func (r *RepositoryServico) Inserir(nome string) (uint, error) {
 	stmt, errPrepare := r.db.Prepare("INSERT INTO servico(nome) VALUES (?)")
 	if errPrepare != nil {
 		panic(errPrepare)
@@ -33,7 +33,7 @@ func (r *repositoryServico) Inserir(nome string) (uint, error) {
 	return uint(id), nil
 }
 
-func (r *repositoryServico) PegandoPeloId(id uint) (servico.Servico, error) {
+func (r *RepositoryServico) PegandoPeloId(id uint) (servico.Servico, error) {
 	var servicoOutput servico.Servico
 	row := r.db.QueryRow("SELECT * FROM servico WHERE id = ?", id)
 	errScan := row.Scan(&servicoOutput.Id, &servicoOutput.Nome)

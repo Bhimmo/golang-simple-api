@@ -8,8 +8,8 @@ import (
 )
 
 func NovoServico(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
 	body, _ := io.ReadAll(r.Body)
+	defer r.Body.Close()
 
 	resp, statusCode := controller.NovoServico(body)
 
