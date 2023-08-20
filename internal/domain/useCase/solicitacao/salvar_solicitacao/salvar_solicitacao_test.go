@@ -13,7 +13,7 @@ func TestNovoSalvarSolicitacao(t *testing.T) {
 	input := salvar_solicitacao.SalvarSolicitacaoInput{
 		ServicoId:     0,
 		SolicitanteId: 123,
-		Campos:        []campo.Campo{{Id: uint(1), Valor: "Nao gostei do atendimento"}},
+		Campos:        []campo.Campo{{Id: uint(1), Valor: "Nao gostei do servico"}},
 	}
 	r := solicitacao.InMemorySolicitacaoRepository{}
 	rs := servico.InMemoryServicoRepository{}
@@ -34,7 +34,7 @@ func TestSalvarSolcitacaoNaoPodeEstarConcluido(t *testing.T) {
 	input := salvar_solicitacao.SalvarSolicitacaoInput{
 		ServicoId:     0,
 		SolicitanteId: 123,
-		Campos:        []campo.Campo{{Id: uint(1), Valor: "Nao gostei do atendimento"}},
+		Campos:        []campo.Campo{{Id: uint(1), Valor: "Nao gostei do servico"}},
 	}
 	r := solicitacao.InMemorySolicitacaoRepository{}
 	rs := servico.InMemoryServicoRepository{}

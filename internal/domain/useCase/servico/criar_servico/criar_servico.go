@@ -14,10 +14,11 @@ func (c *criarServicoUseCase) Execute(input CriarServicoInput) (*servico.Servico
 	s := servico.NovoServico()
 	s.Nome = input.Nome
 
-	err := c.repository.Inserir(s.Nome)
+	idServico, err := c.repository.Inserir(s.Nome)
 	if err != nil {
 		panic("Erro na hora de salvar servico")
 	}
+	s.Id = idServico
 
 	return s, nil
 }

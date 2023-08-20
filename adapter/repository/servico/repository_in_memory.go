@@ -9,9 +9,9 @@ type InMemoryServicoRepository struct {
 	Servicos []servico.Servico
 }
 
-func (r *InMemoryServicoRepository) Inserir(nome string) error {
+func (r *InMemoryServicoRepository) Inserir(nome string) (uint, error) {
 	_ = append(r.Servicos, servico.Servico{Nome: nome})
-	return nil
+	return 1, nil
 }
 
 func (r *InMemoryServicoRepository) PegandoPeloId(id uint) (servico.Servico, error) {
