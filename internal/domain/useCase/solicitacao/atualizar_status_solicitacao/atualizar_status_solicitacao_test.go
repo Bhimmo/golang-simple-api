@@ -2,6 +2,7 @@ package atualizar_status_solicitacao_test
 
 import (
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/campo"
+	"github.com/Bhimmo/golang-simple-api/adapter/repository/mensageria"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/servico"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/solicitacao"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/atualizar_status_solicitacao"
@@ -10,9 +11,12 @@ import (
 )
 
 var r solicitacao.InMemorySolicitacaoRepository
+var rm mensageria.RabbitMqInMemory
 
 func Setup() {
 	r = solicitacao.InMemorySolicitacaoRepository{}
+	rm = mensageria.RabbitMqInMemory{}
+
 	input := salvar_solicitacao.SalvarSolicitacaoInput{
 		ServicoId:     1,
 		SolicitanteId: 123,
@@ -29,7 +33,7 @@ func Setup() {
 func TestPrimeiroStatusAtualizar(t *testing.T) {
 	Setup()
 
-	useCase := atualizar_status_solicitacao.NovoAtualizarStatusSolicitacao(&r)
+	useCase := atualizar_status_solicitacao.NovoAtualizarStatusSolicitacao(&r, &rm)
 
 	result, errExec := useCase.Execute(1)
 
@@ -42,7 +46,7 @@ func TestPrimeiroStatusAtualizar(t *testing.T) {
 }
 
 func TestAtualizarParaUltimoStatusMostrarConcluidoComTrue(t *testing.T) {
-	useCase := atualizar_status_solicitacao.NovoAtualizarStatusSolicitacao(&r)
+	useCase := atualizar_status_solicitacao.NovoAtualizarStatusSolicitacao(&r, &rm)
 
 	result, errExec := useCase.Execute(1)
 
@@ -55,7 +59,7 @@ func TestAtualizarParaUltimoStatusMostrarConcluidoComTrue(t *testing.T) {
 }
 
 func TestForUltimoStatusNaoAtualizar(t *testing.T) {
-	useCase := atualizar_status_solicitacao.NovoAtualizarStatusSolicitacao(&r)
+	useCase := atualizar_status_solicitacao.NovoAtualizarStatusSolicitacao(&r, &rm)
 
 	result, errExec := useCase.Execute(1)
 

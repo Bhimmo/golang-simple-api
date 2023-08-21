@@ -15,7 +15,7 @@ func (r *InMemoryServicoRepository) Inserir(nome string) (uint, error) {
 }
 
 func (r *InMemoryServicoRepository) PegandoPeloId(id uint) (servico.Servico, error) {
-	novoSlice := append(r.Servicos, servico.Servico{Nome: "TESTE DANIEL"})
+	novoSlice := append(r.Servicos, servico.Servico{Id: id, Nome: "TESTE DANIEL"})
 
 	if (int(id)) > len(novoSlice) {
 		return servico.Servico{}, errors.New("Servico nao encontrado")

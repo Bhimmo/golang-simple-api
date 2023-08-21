@@ -38,6 +38,8 @@ func (r *InMemorySolicitacaoRepository) Salvar(
 func (r *InMemorySolicitacaoRepository) BuscarPeloId(id uint) (solicitacao.Solicitacao, error) {
 	item := r.Solicitacao[id-1]
 	Entityservico := servico.NovoServico()
+	Entityservico.Id = item.ServicoId
+
 	EntityStatus := status.NovoStatus()
 	EntityStatus.TendoStatusDesejado(item.StatusId)
 
@@ -47,6 +49,7 @@ func (r *InMemorySolicitacaoRepository) BuscarPeloId(id uint) (solicitacao.Solic
 		item.Concluida,
 		item.SolicitanteId,
 	)
+	s.SetandoId(item.Id)
 	return *s, nil
 }
 
@@ -58,6 +61,6 @@ func (r *InMemorySolicitacaoRepository) AtualizarSolicitacao(solicitacao solicit
 		Concluida:     solicitacao.VerificacaoSeEstaConcluida(),
 		SolicitanteId: solicitacao.PegandoSolicitanteId(),
 	}
-	r.Solicitacao[solicitacao.PegandoId()] = updateItem
+	r.Solicitacao[solicitacao.PegandoId()-1] = updateItem
 	return nil
 }

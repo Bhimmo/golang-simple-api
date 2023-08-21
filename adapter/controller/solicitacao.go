@@ -3,11 +3,13 @@ package controller
 import (
 	"encoding/json"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/campo"
+	"github.com/Bhimmo/golang-simple-api/adapter/repository/mensageria"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/servico"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/solicitacao"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/atualizar_status_solicitacao"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/pegando_solicitacao_pelo_id"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/salvar_solicitacao"
+	rabbitmq2 "github.com/Bhimmo/golang-simple-api/pkg/rabbitmq"
 	"github.com/Bhimmo/golang-simple-api/pkg/sqlite"
 	"net/http"
 	"strconv"
@@ -61,7 +63,8 @@ func AtualizandoStatusSolicitacao(id string) ([]byte, int) {
 	}
 
 	r := solicitacao.NovoRepositorySolicitacao(sqlite.Db)
-	useCase := atualizar_status_solicitacao.NovoAtualizarStatusSolicitacao(r)
+	rMensageria := mensageria.NovoRabbitMq(rabbitmq2.Rabbitmq)
+	useCase := atualizar_status_solicitacao.NovoAtualizarStatusSolicitacao(r, rMensageria)
 	result, errUseCase := useCase.Execute(uint(idInt))
 	if errUseCase != nil {
 		return []byte(errUseCase.Error()), http.StatusInternalServerError

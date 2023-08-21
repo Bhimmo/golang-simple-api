@@ -4,17 +4,21 @@ import (
 	"errors"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/solicitacao"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/status"
+	"github.com/Bhimmo/golang-simple-api/internal/infra/mensageria"
 )
 
 type AtualizarStatusSolicitacao struct {
 	repositorySolicitacao solicitacao.InterfaceSolicitacaoRepository
+	repositoryMensageria  mensageria.InterfaceMensageria
 }
 
 func NovoAtualizarStatusSolicitacao(
 	solicitacaoRepository solicitacao.InterfaceSolicitacaoRepository,
+	mensageriaRepository mensageria.InterfaceMensageria,
 ) *AtualizarStatusSolicitacao {
 	return &AtualizarStatusSolicitacao{
 		repositorySolicitacao: solicitacaoRepository,
+		repositoryMensageria:  mensageriaRepository,
 	}
 }
 
@@ -43,6 +47,13 @@ func (s *AtualizarStatusSolicitacao) Execute(id uint) (AtualizarStatusSolicitaca
 	//Solicitacao concluida ?
 	if EntityStatus.VerificaUltimoStatus() {
 		EntitySolicitacao.EstaConcluida()
+		s.repositoryMensageria.EnviarEmail(
+			"EnviarEmail",
+			mensageria.MensagemEnviarRabbitmq{
+				SolicitanteId: EntitySolicitacao.PegandoSolicitanteId(),
+				Conteudo:      "Solicitacao finalizada",
+			},
+		)
 	}
 
 	//Salvar no banco "update" caso ainda nao finalizado

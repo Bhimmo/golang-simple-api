@@ -9,7 +9,7 @@ import (
 
 func TestPegandoUmServicoPeloId(t *testing.T) {
 	input := pegando_pelo_id.PegandoPeloIdInput{
-		Id: 0,
+		Id: 1,
 	}
 	r := servico.InMemoryServicoRepository{}
 	pegandoPeloIdUseCase := pegando_pelo_id.NovoPegandoPeloId(&r)

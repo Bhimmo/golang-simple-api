@@ -10,7 +10,7 @@ import (
 
 func TestNovoSalvarSolicitacao(t *testing.T) {
 	input := salvar_solicitacao.SalvarSolicitacaoInput{
-		ServicoId:     0,
+		ServicoId:     1,
 		SolicitanteId: 123,
 		Campos: []salvar_solicitacao.SalvarSolicitacaoCampoOutput{
 			{Id: 1, Valor: "teste"},
@@ -34,7 +34,7 @@ func TestNovoSalvarSolicitacao(t *testing.T) {
 
 func TestSalvarSolcitacaoNaoPodeEstarConcluido(t *testing.T) {
 	input := salvar_solicitacao.SalvarSolicitacaoInput{
-		ServicoId:     0,
+		ServicoId:     1,
 		SolicitanteId: 123,
 		Campos: []salvar_solicitacao.SalvarSolicitacaoCampoOutput{
 			{Id: 1, Valor: "teste"},
