@@ -24,6 +24,7 @@ func main() {
 	//Solicitacao
 	r.Post("/solicitacao", routes.SalvarSolicitacao)
 	r.Get("/solicitacao/{id}", routes.PegandoSolicitacaoPeloId)
+	r.Get("/solicitacao/{id}/atualizar-status", routes.AtualizarStatusSolicitacao)
 
 	fmt.Println("Start api")
 	http.ListenAndServe(":3000", r)

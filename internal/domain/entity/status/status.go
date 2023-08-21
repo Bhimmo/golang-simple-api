@@ -1,9 +1,9 @@
 package status
 
 const (
-	SolicitacaoIniciada    uint = 1
-	ESPERA_DA_APROVACAO         = 2
-	SOLICITACAO_FINALIZADA      = 3
+	SolicitacaoIniciada   uint = 1
+	EsperaDaAprovacao          = 2
+	SolicitacaoFinalizada      = 3
 )
 
 type Status struct {
@@ -24,11 +24,29 @@ func (s *Status) TendoStatusDesejado(id uint) {
 	case SolicitacaoIniciada:
 		s.Id = SolicitacaoIniciada
 		s.Nome = "Solicitacao iniciada"
-	case ESPERA_DA_APROVACAO:
-		s.Id = ESPERA_DA_APROVACAO
+	case EsperaDaAprovacao:
+		s.Id = EsperaDaAprovacao
 		s.Nome = "Espera da aprovacao do responsavel"
-	case SOLICITACAO_FINALIZADA:
-		s.Id = SOLICITACAO_FINALIZADA
+	case SolicitacaoFinalizada:
+		s.Id = SolicitacaoFinalizada
 		s.Nome = "Solicitacao finalizada"
 	}
+}
+
+func (s *Status) ProximoStatus() {
+	switch s.Id {
+	case SolicitacaoIniciada:
+		s.Id = EsperaDaAprovacao
+		s.Nome = "Espera da aprovacao do responsavel"
+	case EsperaDaAprovacao:
+		s.Id = SolicitacaoFinalizada
+		s.Nome = "Solicitacao finalizada"
+	}
+}
+
+func (s *Status) VerificaUltimoStatus() bool {
+	if s.Id == SolicitacaoFinalizada {
+		return true
+	}
+	return false
 }

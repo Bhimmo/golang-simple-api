@@ -72,3 +72,16 @@ func (r *RepositorySolicitacao) BuscarPeloId(id uint) (solicitacao.Solicitacao, 
 
 	return *ss, nil
 }
+
+func (r *RepositorySolicitacao) AtualizarSolicitacao(solicitacao solicitacao.Solicitacao) error {
+	stmt, errPrepare := r.db.Prepare("UPDATE solicitacao SET statusId = ?, concluida = ? WHERE id = ?")
+	if errPrepare != nil {
+		return errors.New("erro na preparacao da atualizar")
+	}
+
+	_, errExec := stmt.Exec(solicitacao.PegandoStatusSolicitacao().Id, solicitacao.VerificacaoSeEstaConcluida(), solicitacao.PegandoId())
+	if errExec != nil {
+		return errors.New("erro na execucao da atualizar")
+	}
+	return nil
+}

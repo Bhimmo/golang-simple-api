@@ -6,8 +6,15 @@ import (
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/status"
 )
 
+type InMemorySolicitacaoRepositoryInput struct {
+	Id            uint
+	ServicoId     uint
+	StatusId      uint
+	Concluida     bool
+	SolicitanteId uint
+}
 type InMemorySolicitacaoRepository struct {
-	Solicitacao []any
+	Solicitacao []InMemorySolicitacaoRepositoryInput
 }
 
 func (r *InMemorySolicitacaoRepository) Salvar(
@@ -16,17 +23,41 @@ func (r *InMemorySolicitacaoRepository) Salvar(
 	concluida bool,
 	solicitanteId uint,
 ) (uint, error) {
-	itemSalvar := map[uint][]any{
-		1: {servicoId, statusId, concluida, solicitanteId},
+	idItem := uint(1)
+	itemSalvar := InMemorySolicitacaoRepositoryInput{
+		Id:            idItem,
+		ServicoId:     servicoId,
+		StatusId:      statusId,
+		Concluida:     concluida,
+		SolicitanteId: solicitanteId,
 	}
 	r.Solicitacao = append(r.Solicitacao, itemSalvar)
-	return 1, nil
+	return idItem, nil
 }
 
 func (r *InMemorySolicitacaoRepository) BuscarPeloId(id uint) (solicitacao.Solicitacao, error) {
-	solicitacaoReturn := solicitacao.NovaSolicitacao(
-		servico.Servico{Id: 1, Nome: "Test"}, status.Status{Id: 1}, false, 4,
+	item := r.Solicitacao[id-1]
+	Entityservico := servico.NovoServico()
+	EntityStatus := status.NovoStatus()
+	EntityStatus.TendoStatusDesejado(item.StatusId)
+
+	s := solicitacao.NovaSolicitacao(
+		*Entityservico,
+		EntityStatus,
+		item.Concluida,
+		item.SolicitanteId,
 	)
-	solicitacaoReturn.SetandoId(id)
-	return *solicitacaoReturn, nil
+	return *s, nil
+}
+
+func (r *InMemorySolicitacaoRepository) AtualizarSolicitacao(solicitacao solicitacao.Solicitacao) error {
+	updateItem := InMemorySolicitacaoRepositoryInput{
+		Id:            solicitacao.PegandoId(),
+		StatusId:      solicitacao.PegandoStatusSolicitacao().Id,
+		ServicoId:     solicitacao.PegandoServicoSolicitacao().Id,
+		Concluida:     solicitacao.VerificacaoSeEstaConcluida(),
+		SolicitanteId: solicitacao.PegandoSolicitanteId(),
+	}
+	r.Solicitacao[solicitacao.PegandoId()] = updateItem
+	return nil
 }

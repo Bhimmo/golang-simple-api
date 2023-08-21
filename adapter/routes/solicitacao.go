@@ -28,3 +28,15 @@ func PegandoSolicitacaoPeloId(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(statusCode)
 	w.Write(resp)
 }
+
+func AtualizarStatusSolicitacao(w http.ResponseWriter, r *http.Request) {
+	paramsReplace := strings.Replace(r.RequestURI, "/", "", -1)
+	paramReplaceRota := strings.Replace(paramsReplace, "solicitacao", "", -1)
+	paramId := strings.Split(paramReplaceRota, "atualizar-status")[0]
+
+	resp, statusCode := controller.AtualizandoStatusSolicitacao(paramId)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	w.Write(resp)
+}

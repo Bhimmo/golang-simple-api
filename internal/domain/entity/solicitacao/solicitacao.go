@@ -27,6 +27,10 @@ func NovaSolicitacao(
 	}
 }
 
+func (s *Solicitacao) EstaConcluida() {
+	s.concluida = true
+}
+
 func (s *Solicitacao) SetandoId(id uint) {
 	s.id = id
 }

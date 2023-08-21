@@ -9,4 +9,5 @@ type InterfaceSolicitacaoRepository interface {
 	) (uint, error)
 
 	BuscarPeloId(id uint) (Solicitacao, error)
+	AtualizarSolicitacao(solicitacao Solicitacao) error
 }
