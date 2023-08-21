@@ -11,10 +11,10 @@ func (r *InMemoryCampoRepository) Salvar(campo campo.Campo) error {
 	return nil
 }
 
-func (r *InMemoryCampoRepository) BuscarCampoPeloSolicitanteId(
-	solicitanteId uint,
+func (r *InMemoryCampoRepository) BuscarCampoPeloSolicitacaoId(
+	solicitacaoId uint,
 ) ([]campo.Campo, error) {
 	var campos []campo.Campo
-	campos = append(campos, *campo.NovoCampo(1, "TESTE", solicitanteId))
+	campos = append(campos, *campo.NovoCampo(1, "TESTE", solicitacaoId))
 	return campos, nil
 }

@@ -17,7 +17,7 @@ func TestPegandoSolicitacaoPeloId(t *testing.T) {
 	if err != nil {
 		t.Errorf("Erro em pegar solicitacao")
 	}
-	if result.Solicitacao.PegandoId() != input {
+	if result.Id != input {
 		t.Errorf("Erro em pegar id solicitacao")
 	}
 	if len(result.Campos) <= 0 {

@@ -33,11 +33,11 @@ func (s *Solicitacao) SetandoId(id uint) {
 func (s *Solicitacao) PegandoId() uint {
 	return s.id
 }
-func (s *Solicitacao) PegandoIdDoServicoDaSolicitacao() uint {
-	return s.servico.Id
+func (s *Solicitacao) PegandoServicoSolicitacao() servico.Servico {
+	return s.servico
 }
-func (s *Solicitacao) PegandoIdDoStatusDaSolicitacao() uint {
-	return s.status.Id
+func (s *Solicitacao) PegandoStatusSolicitacao() status.Status {
+	return s.status
 }
 func (s *Solicitacao) VerificacaoSeEstaConcluida() bool {
 	return s.concluida

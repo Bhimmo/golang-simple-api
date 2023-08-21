@@ -3,7 +3,9 @@ package solicitacao
 import (
 	"database/sql"
 	"errors"
+	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/servico"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/solicitacao"
+	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/status"
 )
 
 type RepositorySolicitacao struct {
@@ -39,5 +41,34 @@ func (r *RepositorySolicitacao) Salvar(
 }
 
 func (r *RepositorySolicitacao) BuscarPeloId(id uint) (solicitacao.Solicitacao, error) {
-	return solicitacao.Solicitacao{}, nil
+	rowSolicitacao := r.db.QueryRow("SELECT * FROM solicitacao WHERE id = ?", id)
+
+	var idSolicitacao uint
+	var servicoId uint
+	var statusId uint
+	var concluida bool
+	var solicitanteId uint
+	errScan := rowSolicitacao.Scan(&idSolicitacao, &servicoId, &statusId, &concluida, &solicitanteId)
+	if errScan != nil {
+		return solicitacao.Solicitacao{}, errors.New("Erro para busca informacoes solicitacao")
+	}
+
+	//Servico
+	var nomeServico string
+	rowServico := r.db.QueryRow("SELECT * FROM servico WHERE id = ?", servicoId)
+	errScanServico := rowServico.Scan(&servicoId, &nomeServico)
+	if errScanServico != nil {
+		return solicitacao.Solicitacao{}, errors.New("Erro para buscar informacoes do servico")
+	}
+	se := servico.Servico{Id: servicoId, Nome: nomeServico}
+
+	//Status
+	st := status.NovoStatus()
+	st.TendoStatusDesejado(statusId)
+
+	//Solicitacao retorno
+	ss := solicitacao.NovaSolicitacao(se, st, concluida, solicitanteId)
+	ss.SetandoId(idSolicitacao)
+
+	return *ss, nil
 }

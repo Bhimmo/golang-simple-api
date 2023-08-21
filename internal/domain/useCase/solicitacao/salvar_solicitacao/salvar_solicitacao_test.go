@@ -12,10 +12,7 @@ func TestNovoSalvarSolicitacao(t *testing.T) {
 	input := salvar_solicitacao.SalvarSolicitacaoInput{
 		ServicoId:     0,
 		SolicitanteId: 123,
-		Campos: []struct {
-			Id    uint   `json:"id"`
-			Valor string `json:"valor"`
-		}{
+		Campos: []salvar_solicitacao.SalvarSolicitacaoCampoOutput{
 			{Id: 1, Valor: "teste"},
 		},
 	}
@@ -39,10 +36,7 @@ func TestSalvarSolcitacaoNaoPodeEstarConcluido(t *testing.T) {
 	input := salvar_solicitacao.SalvarSolicitacaoInput{
 		ServicoId:     0,
 		SolicitanteId: 123,
-		Campos: []struct {
-			Id    uint   `json:"id"`
-			Valor string `json:"valor"`
-		}{
+		Campos: []salvar_solicitacao.SalvarSolicitacaoCampoOutput{
 			{Id: 1, Valor: "teste"},
 		},
 	}

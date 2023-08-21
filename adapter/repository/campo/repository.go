@@ -26,6 +26,21 @@ func (r *RepositoryCampo) Salvar(campo campo.Campo) error {
 	}
 	return nil
 }
-func (r *RepositoryCampo) BuscarCampoPeloSolicitanteId(solicitanteId uint) ([]campo.Campo, error) {
-	return nil, nil
+func (r *RepositoryCampo) BuscarCampoPeloSolicitacaoId(solicitacaoId uint) ([]campo.Campo, error) {
+	rows, errQuery := r.db.Query("SELECT * FROM campo WHERE solicitacaoId = ?", solicitacaoId)
+	defer rows.Close()
+	if errQuery != nil {
+		return []campo.Campo{}, errors.New("Erro na consulta solcitacao campo")
+	}
+
+	var listaCampoRetornar []campo.Campo
+	for rows.Next() {
+		var itemListaCampo campo.Campo
+		errScan := rows.Scan(&itemListaCampo.Id, &itemListaCampo.Valor, &itemListaCampo.SolicitacaoId)
+		if errScan != nil {
+			return []campo.Campo{}, errors.New("erro no tranformar solicitacao campo")
+		}
+		listaCampoRetornar = append(listaCampoRetornar, itemListaCampo)
+	}
+	return listaCampoRetornar, nil
 }

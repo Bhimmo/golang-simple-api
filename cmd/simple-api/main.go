@@ -23,6 +23,7 @@ func main() {
 
 	//Solicitacao
 	r.Post("/solicitacao", routes.SalvarSolicitacao)
+	r.Get("/solicitacao/{id}", routes.PegandoSolicitacaoPeloId)
 
 	fmt.Println("Start api")
 	http.ListenAndServe(":3000", r)

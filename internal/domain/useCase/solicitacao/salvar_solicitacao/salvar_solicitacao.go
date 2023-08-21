@@ -34,6 +34,7 @@ func (s *SalvarSolicitacaoUseCase) Execute(input SalvarSolicitacaoInput) (Salvar
 	}
 	//Status
 	newStatus := status.NovoStatus()
+	newStatus.TendoStatusInicial()
 	//Solicitacao
 	newSolicitacao := solicitacao.NovaSolicitacao(
 		servicoBusca,
@@ -43,8 +44,8 @@ func (s *SalvarSolicitacaoUseCase) Execute(input SalvarSolicitacaoInput) (Salvar
 	)
 
 	idSolicitacao, errSalvarSolicitacao := s.repositorySolicitacao.Salvar(
-		newSolicitacao.PegandoIdDoServicoDaSolicitacao(),
-		newSolicitacao.PegandoIdDoStatusDaSolicitacao(),
+		newSolicitacao.PegandoServicoSolicitacao().Id,
+		newSolicitacao.PegandoStatusSolicitacao().Id,
 		newSolicitacao.VerificacaoSeEstaConcluida(),
 		newSolicitacao.PegandoSolicitanteId(),
 	)
@@ -66,7 +67,7 @@ func (s *SalvarSolicitacaoUseCase) Execute(input SalvarSolicitacaoInput) (Salvar
 		Id:            newSolicitacao.PegandoId(),
 		Concluida:     newSolicitacao.VerificacaoSeEstaConcluida(),
 		SolicitanteId: newSolicitacao.PegandoSolicitanteId(),
-		ServicoId:     newSolicitacao.PegandoIdDoServicoDaSolicitacao(),
+		ServicoId:     newSolicitacao.PegandoServicoSolicitacao().Id,
 		Campos:        input.Campos,
 	}, nil
 }
