@@ -7,10 +7,17 @@ import (
 	"github.com/Bhimmo/golang-simple-api/pkg/sqlite"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/joho/godotenv"
 	"net/http"
 )
 
 func main() {
+	// Enviroment
+	errEnv := godotenv.Load("../../.env")
+	if errEnv != nil {
+		panic("Erro ao carregar variaveis de ambiente")
+	}
+
 	//Init database conection
 	sqlite.Init()
 
