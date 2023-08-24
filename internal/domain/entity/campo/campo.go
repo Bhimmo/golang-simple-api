@@ -1,15 +1,10 @@
 package campo
 
 type Campo struct {
-	Id            uint
-	Valor         string
-	SolicitacaoId uint
+	Id   uint
+	Nome string
 }
 
-func NovoCampo(id uint, valor string, solicitacaoId uint) *Campo {
-	return &Campo{
-		Id:            id,
-		Valor:         valor,
-		SolicitacaoId: solicitacaoId,
-	}
+func NovoCampo() *Campo {
+	return &Campo{}
 }

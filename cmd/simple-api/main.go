@@ -2,18 +2,19 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/Bhimmo/golang-simple-api/adapter/routes"
 	"github.com/Bhimmo/golang-simple-api/pkg/rabbitmq"
 	"github.com/Bhimmo/golang-simple-api/pkg/sqlite"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
-	"net/http"
 )
 
 func main() {
 	// Enviroment
-	errEnv := godotenv.Load("../../.env")
+	errEnv := godotenv.Load(".env")
 	if errEnv != nil {
 		panic("Erro ao carregar variaveis de ambiente")
 	}
@@ -27,10 +28,15 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.AllowContentType("application/json"))
+	r.Use(middleware.SetHeader("Content-Type", "application/json"))
 
 	//Servico
 	r.Post("/servico", routes.NovoServico)
 	r.Get("/servico/{id}", routes.PegandoServicoPeloId)
+
+	//Campo
+	r.Post("/campo", routes.NovoCampo)
+	r.Get("/campo/{id}", routes.PegandoCampoById)
 
 	//Solicitacao
 	r.Post("/solicitacao", routes.SalvarSolicitacao)

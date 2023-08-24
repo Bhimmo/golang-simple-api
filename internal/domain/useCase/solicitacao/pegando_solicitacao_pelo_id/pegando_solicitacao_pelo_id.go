@@ -2,18 +2,19 @@ package pegando_solicitacao_pelo_id
 
 import (
 	"errors"
-	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/campo"
+
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/solicitacao"
+	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/solicitacao_campo"
 )
 
 type PegandoSolicitacaoPeloId struct {
 	repositorySolicitacao solicitacao.InterfaceSolicitacaoRepository
-	repositoryCampo       campo.InterfaceCampoRepository
+	repositoryCampo       solicitacao_campo.SolicitacaoCampoInterface
 }
 
 func NovoPegandoSolicitacaoPeloId(
 	solicitacaoRepository solicitacao.InterfaceSolicitacaoRepository,
-	campoRepository campo.InterfaceCampoRepository,
+	campoRepository solicitacao_campo.SolicitacaoCampoInterface,
 ) *PegandoSolicitacaoPeloId {
 	return &PegandoSolicitacaoPeloId{
 		repositorySolicitacao: solicitacaoRepository,
@@ -27,7 +28,7 @@ func (s *PegandoSolicitacaoPeloId) Execute(id uint) (PegandoSolicitacaoPeloIdOut
 		return PegandoSolicitacaoPeloIdOutput{}, errors.New(errBuscaSolicitacao.Error())
 	}
 	//Campos
-	campoBuscaLista, errBuscaCampo := s.repositoryCampo.BuscarCampoPeloSolicitacaoId(solicitacaoBusca.PegandoId())
+	campoBuscaLista, errBuscaCampo := s.repositoryCampo.BuscarCamposPelaSolicitacao(solicitacaoBusca.PegandoId())
 	if errBuscaCampo != nil {
 		return PegandoSolicitacaoPeloIdOutput{}, errors.New(errBuscaCampo.Error())
 	}

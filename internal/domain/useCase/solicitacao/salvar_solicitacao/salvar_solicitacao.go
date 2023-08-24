@@ -55,13 +55,13 @@ func (s *SalvarSolicitacaoUseCase) Execute(input SalvarSolicitacaoInput) (Salvar
 
 	newSolicitacao.SetandoId(idSolicitacao)
 	//Campos
-	for _, itemCampo := range input.Campos {
-		newCampo := campo.NovoCampo(itemCampo.Id, itemCampo.Valor, newSolicitacao.PegandoId())
-		errCampo := s.repositoryCampo.Salvar(*newCampo)
-		if errCampo != nil {
-			return SalvarSolicitacaoOutput{}, errors.New("Erro em salvar campos")
-		}
-	}
+	//for _, itemCampo := range input.Campos {
+	//	newCampo := campo.NovoCampo(itemCampo.Id, itemCampo.Valor, newSolicitacao.PegandoId())
+	//	errCampo := s.repositoryCampo.Salvar(*newCampo)
+	//	if errCampo != nil {
+	//		return SalvarSolicitacaoOutput{}, errors.New("Erro em salvar campos")
+	//	}
+	//}
 
 	return SalvarSolicitacaoOutput{
 		Id:            newSolicitacao.PegandoId(),
