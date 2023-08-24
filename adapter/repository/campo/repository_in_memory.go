@@ -16,3 +16,7 @@ func (r *InMemoryCampoRepository) Salvar(campo campo.Campo) (uint, error) {
 func (r *InMemoryCampoRepository) BuscarPeloId(id uint) (campo.Campo, error) {
 	return r.Campo[id-1], nil
 }
+
+func (r *InMemoryCampoRepository) BuscarTodos() ([]campo.Campo, error) {
+	return r.Campo, nil
+}

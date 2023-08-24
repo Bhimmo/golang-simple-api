@@ -46,21 +46,20 @@ func (r *RepositoryCampo) BuscarPeloId(id uint) (campo.Campo, error) {
 	return campoRetorno, nil
 }
 
-// func (r *RepositoryCampo) BuscarCampoPeloSolicitacaoId(solicitacaoId uint) ([]campo.Campo, error) {
-// 	rows, errQuery := r.db.Query("SELECT * FROM campo WHERE solicitacaoId = ?", solicitacaoId)
-// 	defer rows.Close()
-// 	if errQuery != nil {
-// 		return []campo.Campo{}, errors.New("Erro na consulta solcitacao campo")
-// 	}
+func (r *RepositoryCampo) BuscarTodos() ([]campo.Campo, error) {
+	rows, errQuery := r.db.Query("SELECT * FROM campo")
+	if errQuery != nil {
+		return nil, errQuery
+	}
 
-// 	var listaCampoRetornar []campo.Campo
-// 	for rows.Next() {
-// 		var itemListaCampo campo.Campo
-// 		errScan := rows.Scan(&itemListaCampo.Id, &itemListaCampo.Valor, &itemListaCampo.SolicitacaoId)
-// 		if errScan != nil {
-// 			return []campo.Campo{}, errors.New("erro no tranformar solicitacao campo")
-// 		}
-// 		listaCampoRetornar = append(listaCampoRetornar, itemListaCampo)
-// 	}
-// 	return listaCampoRetornar, nil
-// }
+	var campoRetorno []campo.Campo
+	for rows.Next() {
+		var campoLista campo.Campo
+		errScan := rows.Scan(&campoLista.Id, &campoLista.Nome)
+		if errScan != nil {
+			return nil, errScan
+		}
+		campoRetorno = append(campoRetorno, campoLista)
+	}
+	return campoRetorno, nil
+}

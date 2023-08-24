@@ -8,8 +8,20 @@ import (
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/campo/cadastrar_campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/campo/pegando_campo_pelo_id"
+	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/campo/todos_campos"
 	"github.com/Bhimmo/golang-simple-api/pkg/sqlite"
 )
+
+func TodosCampos() ([]byte, int) {
+	rc := campo.NovoRepositoryCampo(sqlite.Db)
+	useCase := todos_campos.NewTodosCampos(rc)
+	result, errExec := useCase.Execute()
+	if errExec != nil {
+		return []byte(errExec.Error()), http.StatusInternalServerError
+	}
+	reBy, _ := json.Marshal(&result)
+	return reBy, http.StatusOK
+}
 
 func NovoCampo(body []byte) (cadastrar_campo.CadastrarCampoOutput, int) {
 	var input cadastrar_campo.CadastrarCampoInput

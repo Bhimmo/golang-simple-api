@@ -9,6 +9,13 @@ import (
 	"github.com/Bhimmo/golang-simple-api/adapter/controller"
 )
 
+func TodosCampos(w http.ResponseWriter, r *http.Request) {
+	resp, statusCode := controller.TodosCampos()
+
+	w.WriteHeader(statusCode)
+	w.Write(resp)
+}
+
 func NovoCampo(w http.ResponseWriter, r *http.Request) {
 	body, _ := io.ReadAll(r.Body)
 	defer r.Body.Close()
