@@ -1,13 +1,11 @@
 package atualizar_status_solicitacao_test
 
 import (
-	"github.com/Bhimmo/golang-simple-api/adapter/repository/campo"
+	"testing"
+
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/mensageria"
-	"github.com/Bhimmo/golang-simple-api/adapter/repository/servico"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/solicitacao"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/atualizar_status_solicitacao"
-	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/salvar_solicitacao"
-	"testing"
 )
 
 var r solicitacao.InMemorySolicitacaoRepository
@@ -17,17 +15,7 @@ func Setup() {
 	r = solicitacao.InMemorySolicitacaoRepository{}
 	rm = mensageria.RabbitMqInMemory{}
 
-	input := salvar_solicitacao.SalvarSolicitacaoInput{
-		ServicoId:     1,
-		SolicitanteId: 123,
-		Campos: []salvar_solicitacao.SalvarSolicitacaoCampoOutput{
-			{Id: 1, Valor: "teste"},
-		},
-	}
-	rs := servico.InMemoryServicoRepository{}
-	rc := campo.InMemoryCampoRepository{}
-	useCase := salvar_solicitacao.NovoSalvarSolicitacao(&r, &rs, &rc)
-	_, _ = useCase.Execute(input)
+	r.Salvar(1, 1, false, 123)
 }
 
 func TestPrimeiroStatusAtualizar(t *testing.T) {

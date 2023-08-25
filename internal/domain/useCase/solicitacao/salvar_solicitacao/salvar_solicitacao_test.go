@@ -1,14 +1,28 @@
 package salvar_solicitacao_test
 
 import (
+	"testing"
+
 	campoRepo "github.com/Bhimmo/golang-simple-api/adapter/repository/campo"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/servico"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/solicitacao"
+	"github.com/Bhimmo/golang-simple-api/adapter/repository/solicitacao_campo"
+	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/salvar_solicitacao"
-	"testing"
 )
 
+var rc campoRepo.InMemoryCampoRepository
+
+func Setup() {
+	//Salvar um campo
+	_, _ = rc.Salvar(campo.Campo{
+		Id: 1, Nome: "Teste daniel",
+	})
+}
+
 func TestNovoSalvarSolicitacao(t *testing.T) {
+	Setup()
+
 	input := salvar_solicitacao.SalvarSolicitacaoInput{
 		ServicoId:     1,
 		SolicitanteId: 123,
@@ -19,9 +33,9 @@ func TestNovoSalvarSolicitacao(t *testing.T) {
 
 	r := solicitacao.InMemorySolicitacaoRepository{}
 	rs := servico.InMemoryServicoRepository{}
-	rc := campoRepo.InMemoryCampoRepository{}
+	rsc := solicitacao_campo.RepositorySolicitacaoCampoInMemory{}
 
-	useCase := salvar_solicitacao.NovoSalvarSolicitacao(&r, &rs, &rc)
+	useCase := salvar_solicitacao.NovoSalvarSolicitacao(&r, &rs, &rc, &rsc)
 	s, errSolicitacao := useCase.Execute(input)
 
 	if errSolicitacao != nil {
@@ -42,9 +56,9 @@ func TestSalvarSolcitacaoNaoPodeEstarConcluido(t *testing.T) {
 	}
 	r := solicitacao.InMemorySolicitacaoRepository{}
 	rs := servico.InMemoryServicoRepository{}
-	rc := campoRepo.InMemoryCampoRepository{}
+	rsc := solicitacao_campo.RepositorySolicitacaoCampoInMemory{}
 
-	useCase := salvar_solicitacao.NovoSalvarSolicitacao(&r, &rs, &rc)
+	useCase := salvar_solicitacao.NovoSalvarSolicitacao(&r, &rs, &rc, &rsc)
 	s, errSolicitacao := useCase.Execute(input)
 
 	if errSolicitacao != nil {
