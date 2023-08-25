@@ -17,7 +17,7 @@ jobs:
 
         - name: Install dependencies
           run: |
-            go get github.com/streadway/amqp@v1.1.0
+            go get .
 
         - name: Build
           run: go build -v ./...
