@@ -30,6 +30,9 @@ func main() {
 	r.Use(middleware.AllowContentType("application/json"))
 	r.Use(middleware.SetHeader("Content-Type", "application/json"))
 
+	//Auth
+	r.Post("/access-token", routes.AccessToken)
+
 	//Servico
 	r.Post("/servico", routes.NovoServico)
 	r.Get("/servico/{id}", routes.PegandoServicoPeloId)
