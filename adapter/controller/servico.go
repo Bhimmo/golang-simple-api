@@ -10,6 +10,7 @@ import (
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/servico_campo"
 	cadastrando_campo_servico "github.com/Bhimmo/golang-simple-api/internal/domain/useCase/servico/cadastrando_campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/servico/criar_servico"
+	pegando_campo_servico "github.com/Bhimmo/golang-simple-api/internal/domain/useCase/servico/pegando_campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/servico/pegando_pelo_id"
 	"github.com/Bhimmo/golang-simple-api/pkg/sqlite"
 )
@@ -73,4 +74,26 @@ func AdicionandoCamposServico(body []byte) ([]byte, int) {
 	}
 
 	return []byte(""), http.StatusNoContent
+}
+
+func PegandoCampos(id string) ([]byte, int) {
+	idInt, errInt := strconv.Atoi(id)
+	if errInt != nil {
+		return []byte("Parametros invalidos"), http.StatusBadRequest
+	}
+
+	input := pegando_campo_servico.PegandoCampoServicoInput{
+		ServicoId: uint(idInt),
+	}
+
+	rcs := servico_campo.NewRepositoryServicoCampo(sqlite.Db)
+	useCase := pegando_campo_servico.NewPegandoCampoServico(rcs)
+	result, errExec := useCase.Execute(input)
+
+	if errExec != nil {
+		return []byte(errExec.Error()), http.StatusInternalServerError
+	}
+
+	reBy, _ := json.Marshal(&result)
+	return reBy, http.StatusOK
 }

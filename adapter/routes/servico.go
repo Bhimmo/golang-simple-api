@@ -37,3 +37,13 @@ func AdicionandoCampos(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(statusCode)
 	w.Write(resp)
 }
+
+func PegandoCampos(w http.ResponseWriter, r *http.Request) {
+	paramsSplit := strings.Split(r.RequestURI, "/")
+	id := paramsSplit[2]
+
+	resp, statusCode := controller.PegandoCampos(id)
+
+	w.WriteHeader(statusCode)
+	w.Write(resp)
+}

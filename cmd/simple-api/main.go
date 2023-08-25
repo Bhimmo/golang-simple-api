@@ -34,6 +34,7 @@ func main() {
 	r.Post("/servico", routes.NovoServico)
 	r.Get("/servico/{id}", routes.PegandoServicoPeloId)
 	r.Post("/servico/campos", routes.AdicionandoCampos)
+	r.Get("/servico/{id}/campos", routes.PegandoCampos)
 
 	//Campo
 	r.Get("/campo", routes.TodosCampos)

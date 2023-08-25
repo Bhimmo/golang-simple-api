@@ -8,6 +8,12 @@ type PegandoCampoServico struct {
 	repositoryServico servico_campo.ServicoCampoInterface
 }
 
+func NewPegandoCampoServico(servicoRepository servico_campo.ServicoCampoInterface) *PegandoCampoServico {
+	return &PegandoCampoServico{
+		repositoryServico: servicoRepository,
+	}
+}
+
 func (u *PegandoCampoServico) Execute(input PegandoCampoServicoInput) (PegandoCampoServicoOutput, error) {
 	campos, errCampos := u.repositoryServico.PegarCamposDoServico(input.ServicoId)
 	if errCampos != nil {

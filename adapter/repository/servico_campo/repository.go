@@ -32,5 +32,28 @@ func (r *RepostioryServicoCampo) SalvarCampoNoServico(servicoId uint, entityCamp
 }
 
 func (r *RepostioryServicoCampo) PegarCamposDoServico(servicoId uint) ([]campo.Campo, error) {
-	return nil, nil
+	rows, errRows := r.db.Query(`
+		select 
+			c.* 
+		from servico_campo sc 
+			join campo c on c.id = sc.campoId 
+		where 
+			sc.servicoId = ?`,
+		servicoId)
+
+	if errRows != nil {
+		return nil, errors.New("campos do servico: servico invalido")
+	}
+
+	var listaCamposRetorno []campo.Campo
+	for rows.Next() {
+		var campoLista campo.Campo
+		errScan := rows.Scan(&campoLista.Id, &campoLista.Nome)
+		if errScan != nil {
+			return nil, errScan
+		}
+		listaCamposRetorno = append(listaCamposRetorno, campoLista)
+	}
+
+	return listaCamposRetorno, nil
 }
