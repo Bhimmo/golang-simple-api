@@ -5,7 +5,7 @@ import "time"
 type PegandoSolicitacaoPeloIdOutput struct {
 	Id            uint                                  `json:"id"`
 	Servico       PegandoSolicitacaoPeloIdServicoOutput `json:"servico"`
-	Status        PegandoSolicitacaoPeloIdStatusOutput  `json:"status"`
+	Status        string                                `json:"status"`
 	Concluida     bool                                  `json:"concluida"`
 	SolicitanteId uint                                  `json:"solicitante_id"`
 	CreatedAt     time.Time                             `json:"createdAt"`
@@ -13,10 +13,6 @@ type PegandoSolicitacaoPeloIdOutput struct {
 }
 
 type PegandoSolicitacaoPeloIdServicoOutput struct {
-	Id   uint   `json:"id"`
-	Nome string `json:"nome"`
-}
-type PegandoSolicitacaoPeloIdStatusOutput struct {
 	Id   uint   `json:"id"`
 	Nome string `json:"nome"`
 }

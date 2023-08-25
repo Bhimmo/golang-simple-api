@@ -69,9 +69,6 @@ func (s *AtualizarStatusSolicitacao) Execute(id uint) (AtualizarStatusSolicitaca
 	return AtualizarStatusSolicitacaoOutput{
 		Id:        EntitySolicitacao.PegandoId(),
 		Concluida: EntitySolicitacao.VerificacaoSeEstaConcluida(),
-		Status: AtualizarStatusSolicitacaoStatusOutput{
-			Id:   EntitySolicitacao.PegandoStatusSolicitacao().Id,
-			Nome: EntitySolicitacao.PegandoStatusSolicitacao().Nome,
-		},
+		Status:    EntitySolicitacao.PegandoStatusSolicitacao().Nome,
 	}, nil
 }

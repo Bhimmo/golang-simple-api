@@ -56,10 +56,7 @@ func (s *PegandoSolicitacaoPeloId) Execute(id uint) (PegandoSolicitacaoPeloIdOut
 			Id:   solicitacaoBusca.PegandoServicoSolicitacao().Id,
 			Nome: solicitacaoBusca.PegandoServicoSolicitacao().Nome,
 		},
-		Status: PegandoSolicitacaoPeloIdStatusOutput{
-			Id:   solicitacaoBusca.PegandoStatusSolicitacao().Id,
-			Nome: solicitacaoBusca.PegandoStatusSolicitacao().Nome,
-		},
+		Status:        solicitacaoBusca.PegandoStatusSolicitacao().Nome,
 		Concluida:     solicitacaoBusca.VerificacaoSeEstaConcluida(),
 		SolicitanteId: solicitacaoBusca.PegandoSolicitanteId(),
 		CreatedAt:     solicitacaoBusca.CreatedAt,
