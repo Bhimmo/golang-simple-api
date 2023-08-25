@@ -22,11 +22,13 @@ func generateBaseDados() {
 	_, errSolicitacao := Db.Exec("CREATE TABLE IF NOT EXISTS solicitacao (id INTEGER PRIMARY KEY AUTOINCREMENT, servicoId INTEGER, statusId INTEGER, concluida INTEGER, solicitanteId INTEGER, FOREIGN KEY (servicoId) REFERENCES servico(id))")
 	_, errCampo := Db.Exec("CREATE TABLE IF NOT EXISTS campo (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT)")
 	_, errCampoSolicitacao := Db.Exec("CREATE TABLE IF NOT EXISTS solicitacao_campo (id INTEGER PRIMARY KEY AUTOINCREMENT, campoId INTEGER, valor TEXT, solicitacaoId INTEGER, FOREIGN KEY (campoId) REFERENCES campo(id), FOREIGN KEY (solicitacaoId) REFERENCES solicitacao(id))")
+	_, errServicoCampo := Db.Exec("CREATE TABLE IF NOT EXISTS servico_campo (id INTEGER PRIMARY KEY AUTOINCREMENT, servicoId INTEGER, campoId INTEGER, FOREIGN KEY (campoId) REFERENCES campo(id), FOREIGN KEY (servicoId) REFERENCES servico(id))")
 
 	errorDb(errServico)
 	errorDb(errSolicitacao)
 	errorDb(errCampoSolicitacao)
 	errorDb(errCampo)
+	errorDb(errServicoCampo)
 }
 
 func errorDb(err error) {

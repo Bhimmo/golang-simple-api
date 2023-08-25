@@ -3,6 +3,7 @@ package servico
 import (
 	"database/sql"
 	"errors"
+
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/servico"
 )
 
@@ -38,7 +39,7 @@ func (r *RepositoryServico) PegandoPeloId(id uint) (servico.Servico, error) {
 	row := r.db.QueryRow("SELECT * FROM servico WHERE id = ?", id)
 	errScan := row.Scan(&servicoOutput.Id, &servicoOutput.Nome)
 	if errScan != nil {
-		return servico.Servico{}, errors.New("Erro na leitura dos dados")
+		return servico.Servico{}, errors.New("servico nao encontrado")
 	}
 
 	return servicoOutput, nil

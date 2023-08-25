@@ -1,10 +1,11 @@
 package routes
 
 import (
-	"github.com/Bhimmo/golang-simple-api/adapter/controller"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/Bhimmo/golang-simple-api/adapter/controller"
 )
 
 func NovoServico(w http.ResponseWriter, r *http.Request) {
@@ -13,7 +14,6 @@ func NovoServico(w http.ResponseWriter, r *http.Request) {
 
 	resp, statusCode := controller.NovoServico(body)
 
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	w.Write(resp)
 }
@@ -24,7 +24,16 @@ func PegandoServicoPeloId(w http.ResponseWriter, r *http.Request) {
 
 	resp, statusCode := controller.PegandoServicoPeloId(paramId)
 
-	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	w.Write(resp)
+}
+
+func AdicionandoCampos(w http.ResponseWriter, r *http.Request) {
+	body, _ := io.ReadAll(r.Body)
+	defer r.Body.Close()
+
+	resp, statusCode := controller.AdicionandoCamposServico(body)
+
 	w.WriteHeader(statusCode)
 	w.Write(resp)
 }

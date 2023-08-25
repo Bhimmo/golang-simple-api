@@ -2,12 +2,16 @@ package controller
 
 import (
 	"encoding/json"
+	"net/http"
+	"strconv"
+
+	"github.com/Bhimmo/golang-simple-api/adapter/repository/campo"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/servico"
+	"github.com/Bhimmo/golang-simple-api/adapter/repository/servico_campo"
+	cadastrando_campo_servico "github.com/Bhimmo/golang-simple-api/internal/domain/useCase/servico/cadastrando_campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/servico/criar_servico"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/servico/pegando_pelo_id"
 	"github.com/Bhimmo/golang-simple-api/pkg/sqlite"
-	"net/http"
-	"strconv"
 )
 
 func NovoServico(body []byte) ([]byte, int) {
@@ -48,4 +52,25 @@ func PegandoServicoPeloId(id string) ([]byte, int) {
 
 	re, _ := json.Marshal(result)
 	return re, http.StatusOK
+}
+
+func AdicionandoCamposServico(body []byte) ([]byte, int) {
+	var input cadastrando_campo_servico.CadastrandoCampoServicoInput
+
+	errUm := json.Unmarshal(body, &input)
+	if errUm != nil {
+		return []byte(errUm.Error()), http.StatusBadRequest
+	}
+
+	rsc := servico_campo.NewRepositoryServicoCampo(sqlite.Db)
+	rs := servico.NovoRepositoryServico(sqlite.Db)
+	rc := campo.NovoRepositoryCampo(sqlite.Db)
+	useCase := cadastrando_campo_servico.NewCadastrandoCampoServico(rsc, rs, rc)
+
+	errorUseCase := useCase.Execute(input)
+	if errorUseCase != nil {
+		return []byte(errorUseCase.Error()), http.StatusInternalServerError
+	}
+
+	return []byte(""), http.StatusNoContent
 }

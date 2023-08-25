@@ -40,7 +40,7 @@ func (r *RepositoryCampo) BuscarPeloId(id uint) (campo.Campo, error) {
 
 	errScan := row.Scan(&campoRetorno.Id, &campoRetorno.Nome)
 	if errScan != nil {
-		return campo.Campo{}, errScan
+		return campo.Campo{}, errors.New("campo nao encontrado")
 	}
 
 	return campoRetorno, nil
