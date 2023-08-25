@@ -5,34 +5,38 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Bhimmo/golang-simple-api/adapter/repository/campo"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/mensageria"
+	"github.com/Bhimmo/golang-simple-api/adapter/repository/servico"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/solicitacao"
+	"github.com/Bhimmo/golang-simple-api/adapter/repository/solicitacao_campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/atualizar_status_solicitacao"
+	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/salvar_solicitacao"
 	rabbitmq2 "github.com/Bhimmo/golang-simple-api/pkg/rabbitmq"
 	"github.com/Bhimmo/golang-simple-api/pkg/sqlite"
 )
 
 func SalvarSolicitacao(body []byte) ([]byte, int) {
-	// var input salvar_solicitacao.SalvarSolicitacaoInput
+	var input salvar_solicitacao.SalvarSolicitacaoInput
 
-	// errBody := json.Unmarshal(body, &input)
-	// if errBody != nil || len(input.Campos) <= 0 {
-	// 	return []byte("Body invalido"), http.StatusBadRequest
-	// }
+	errBody := json.Unmarshal(body, &input)
+	if errBody != nil || len(input.Campos) <= 0 {
+		return []byte("Body invalido"), http.StatusBadRequest
+	}
 
-	// r := solicitacao.NovoRepositorySolicitacao(sqlite.Db)
-	// rs := servico.NovoRepositoryServico(sqlite.Db)
-	// rc := campo.NovoRepositoryCampo(sqlite.Db)
-	// useCase := salvar_solicitacao.NovoSalvarSolicitacao(r, rs, rc)
+	r := solicitacao.NovoRepositorySolicitacao(sqlite.Db)
+	rs := servico.NovoRepositoryServico(sqlite.Db)
+	rc := campo.NovoRepositoryCampo(sqlite.Db)
+	rsc := solicitacao_campo.NewRepositorySolicitacaoCampo(sqlite.Db)
+	useCase := salvar_solicitacao.NovoSalvarSolicitacao(r, rs, rc, rsc)
 
-	// result, errUseCase := useCase.Execute(input)
-	// if errUseCase != nil {
-	// 	return []byte(errUseCase.Error()), http.StatusInternalServerError
-	// }
+	result, errUseCase := useCase.Execute(input)
+	if errUseCase != nil {
+		return []byte(errUseCase.Error()), http.StatusInternalServerError
+	}
 
-	// re, _ := json.Marshal(&result)
-	// return re, http.StatusCreated
-	return []byte("BOM DIA"), http.StatusOK
+	re, _ := json.Marshal(&result)
+	return re, http.StatusCreated
 }
 
 func PegandoSolicitacaoPeloId(id string) ([]byte, int) {

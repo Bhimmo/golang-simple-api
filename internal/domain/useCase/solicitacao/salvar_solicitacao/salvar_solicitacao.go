@@ -2,27 +2,32 @@ package salvar_solicitacao
 
 import (
 	"errors"
+
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/servico"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/solicitacao"
+	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/solicitacao_campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/status"
 )
 
 type SalvarSolicitacaoUseCase struct {
-	repositorySolicitacao solicitacao.InterfaceSolicitacaoRepository
-	repositoryServico     servico.InterfaceServicoRepository
-	repositoryCampo       campo.InterfaceCampoRepository
+	repositorySolicitacao      solicitacao.InterfaceSolicitacaoRepository
+	repositoryServico          servico.InterfaceServicoRepository
+	repositoryCampo            campo.InterfaceCampoRepository
+	repositorySolicitacaocampo solicitacao_campo.SolicitacaoCampoInterface
 }
 
 func NovoSalvarSolicitacao(
 	solicitacaoRepository solicitacao.InterfaceSolicitacaoRepository,
 	servicoRepository servico.InterfaceServicoRepository,
 	campoRepository campo.InterfaceCampoRepository,
+	solicitacaoCampoRepository solicitacao_campo.SolicitacaoCampoInterface,
 ) *SalvarSolicitacaoUseCase {
 	return &SalvarSolicitacaoUseCase{
-		repositorySolicitacao: solicitacaoRepository,
-		repositoryServico:     servicoRepository,
-		repositoryCampo:       campoRepository,
+		repositorySolicitacao:      solicitacaoRepository,
+		repositoryServico:          servicoRepository,
+		repositoryCampo:            campoRepository,
+		repositorySolicitacaocampo: solicitacaoCampoRepository,
 	}
 }
 
@@ -30,7 +35,7 @@ func (s *SalvarSolicitacaoUseCase) Execute(input SalvarSolicitacaoInput) (Salvar
 	//Servico
 	servicoBusca, errServico := s.repositoryServico.PegandoPeloId(input.ServicoId)
 	if errServico != nil {
-		return SalvarSolicitacaoOutput{}, errors.New("Erro em encontrar servico")
+		return SalvarSolicitacaoOutput{}, errors.New("erro em encontrar servico")
 	}
 	//Status
 	newStatus := status.NovoStatus()
@@ -50,18 +55,29 @@ func (s *SalvarSolicitacaoUseCase) Execute(input SalvarSolicitacaoInput) (Salvar
 		newSolicitacao.PegandoSolicitanteId(),
 	)
 	if errSalvarSolicitacao != nil {
-		return SalvarSolicitacaoOutput{}, errors.New("Erro em salvar solicitacao")
+		return SalvarSolicitacaoOutput{}, errors.New("erro em salvar solicitacao")
 	}
-
 	newSolicitacao.SetandoId(idSolicitacao)
+
 	//Campos
-	//for _, itemCampo := range input.Campos {
-	//	newCampo := campo.NovoCampo(itemCampo.Id, itemCampo.Valor, newSolicitacao.PegandoId())
-	//	errCampo := s.repositoryCampo.Salvar(*newCampo)
-	//	if errCampo != nil {
-	//		return SalvarSolicitacaoOutput{}, errors.New("Erro em salvar campos")
-	//	}
-	//}
+	for _, itemCampo := range input.Campos {
+		newCampo := campo.NovoCampo()
+		newCampo.Id = itemCampo.Id
+
+		campoBusca, errCampo := s.repositoryCampo.BuscarPeloId(newCampo.Id)
+		if errCampo != nil {
+			return SalvarSolicitacaoOutput{}, errCampo
+		}
+
+		errCampoSolicitacao := s.repositorySolicitacaocampo.SalvarCamposDaSolicitacao(
+			campoBusca.Id,
+			newSolicitacao.PegandoId(),
+			itemCampo.Valor,
+		)
+		if errCampoSolicitacao != nil {
+			return SalvarSolicitacaoOutput{}, errCampoSolicitacao
+		}
+	}
 
 	return SalvarSolicitacaoOutput{
 		Id:            newSolicitacao.PegandoId(),
