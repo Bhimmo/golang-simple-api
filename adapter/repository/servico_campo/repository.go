@@ -57,3 +57,19 @@ func (r *RepostioryServicoCampo) PegarCamposDoServico(servicoId uint) ([]campo.C
 
 	return listaCamposRetorno, nil
 }
+
+func (r *RepostioryServicoCampo) PegarCampoExistenteByCampoIdAndServicoId(
+	campoId uint,
+	servicoId uint,
+) bool {
+	row := r.db.QueryRow("SELECT * FROM servico_campo where campoId = ? AND servicoId = ?", campoId, servicoId)
+
+	var idServicoCampo uint
+	var ServicoCampoServicoId uint
+	var ServicoCampoCampoId uint
+	err := row.Scan(&idServicoCampo, &ServicoCampoServicoId, &ServicoCampoCampoId)
+	if err != nil {
+		return false
+	}
+	return true
+}

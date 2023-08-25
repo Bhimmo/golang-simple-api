@@ -36,9 +36,15 @@ func (u *CadastrandoCampoServico) Execute(input CadastrandoCampoServicoInput) er
 			return errCampo
 		}
 
-		errSalvar := u.repositoryServicoCampo.SalvarCampoNoServico(servicoBusca.Id, EntityCampoBusca)
-		if errSalvar != nil {
-			return errSalvar
+		//Verificando se o campo ja esta cadastrado
+		campoExiste := u.repositoryServicoCampo.PegarCampoExistenteByCampoIdAndServicoId(
+			EntityCampoBusca.Id, servicoBusca.Id,
+		)
+		if !campoExiste {
+			errSalvar := u.repositoryServicoCampo.SalvarCampoNoServico(servicoBusca.Id, EntityCampoBusca)
+			if errSalvar != nil {
+				return errSalvar
+			}
 		}
 	}
 	return nil

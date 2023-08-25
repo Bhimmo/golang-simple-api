@@ -57,7 +57,7 @@ func TestForUltimoStatusNaoAtualizar(t *testing.T) {
 	if result.Concluida != true {
 		t.Errorf("Caso de uso falhou na atualizacao de status")
 	}
-	if result.Status.Id != 3 {
+	if result.Status != "Solicitacao finalizada" {
 		t.Errorf("Caso de uso falhou status nao permitido nessa etapa")
 	}
 }
