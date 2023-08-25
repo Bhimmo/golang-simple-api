@@ -2,6 +2,7 @@ package salvar_solicitacao
 
 import (
 	"errors"
+	"time"
 
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/servico"
@@ -46,6 +47,7 @@ func (s *SalvarSolicitacaoUseCase) Execute(input SalvarSolicitacaoInput) (Salvar
 		newStatus,
 		false,
 		input.SolicitanteId,
+		time.Now(),
 	)
 
 	idSolicitacao, errSalvarSolicitacao := s.repositorySolicitacao.Salvar(

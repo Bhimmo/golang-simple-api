@@ -1,6 +1,8 @@
 package solicitacao
 
 import (
+	"time"
+
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/servico"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/solicitacao"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/status"
@@ -12,6 +14,7 @@ type InMemorySolicitacaoRepositoryInput struct {
 	StatusId      uint
 	Concluida     bool
 	SolicitanteId uint
+	CreatedAt     time.Time
 }
 type InMemorySolicitacaoRepository struct {
 	Solicitacao []InMemorySolicitacaoRepositoryInput
@@ -48,6 +51,7 @@ func (r *InMemorySolicitacaoRepository) BuscarPeloId(id uint) (solicitacao.Solic
 		EntityStatus,
 		item.Concluida,
 		item.SolicitanteId,
+		item.CreatedAt,
 	)
 	s.SetandoId(item.Id)
 	return *s, nil

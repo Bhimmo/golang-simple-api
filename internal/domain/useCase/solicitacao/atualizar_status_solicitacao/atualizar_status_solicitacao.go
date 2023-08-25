@@ -42,12 +42,20 @@ func (s *AtualizarStatusSolicitacao) Execute(id uint) (AtualizarStatusSolicitaca
 		EntityStatus,
 		solicitacaoBusca.VerificacaoSeEstaConcluida(),
 		solicitacaoBusca.PegandoSolicitanteId(),
+		solicitacaoBusca.CreatedAt,
 	)
 	EntitySolicitacao.SetandoId(solicitacaoBusca.PegandoId())
 
 	//Solicitacao concluida e a solicitacao do banco nao pode estar como concluida
 	if EntityStatus.VerificaUltimoStatus() && !statusSolicitacaoBusca.VerificaUltimoStatus() {
 		EntitySolicitacao.EstaConcluida()
+		s.repositoryMensageria.EnviarEmail(
+			"EnviarEmail",
+			mensageria.MensagemEnviarRabbitmq{
+				SolicitanteId: EntitySolicitacao.PegandoSolicitanteId(),
+				Conteudo:      "Solicitacao finalizada",
+			},
+		)
 	}
 
 	//Salvar no banco "update" caso ainda nao finalizado
@@ -56,13 +64,6 @@ func (s *AtualizarStatusSolicitacao) Execute(id uint) (AtualizarStatusSolicitaca
 		if errUpdate != nil {
 			return AtualizarStatusSolicitacaoOutput{}, errors.New("erro em atualizar solicitacao")
 		}
-		s.repositoryMensageria.EnviarEmail(
-			"EnviarEmail",
-			mensageria.MensagemEnviarRabbitmq{
-				SolicitanteId: EntitySolicitacao.PegandoSolicitanteId(),
-				Conteudo:      "Solicitacao finalizada",
-			},
-		)
 	}
 
 	return AtualizarStatusSolicitacaoOutput{

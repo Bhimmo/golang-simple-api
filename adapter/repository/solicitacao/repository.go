@@ -3,6 +3,7 @@ package solicitacao
 import (
 	"database/sql"
 	"errors"
+	"time"
 
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/servico"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/solicitacao"
@@ -23,12 +24,12 @@ func (r *RepositorySolicitacao) Salvar(
 	concluida bool,
 	solicitanteId uint,
 ) (uint, error) {
-	stmt, errPrepare := r.db.Prepare("INSERT INTO solicitacao (servicoId, statusId, concluida, solicitanteId) VALUES (?, ?, ?, ?)")
+	stmt, errPrepare := r.db.Prepare("INSERT INTO solicitacao (servicoId, statusId, concluida, solicitanteId, createdAt) VALUES (?, ?, ?, ?, ?)")
 	if errPrepare != nil {
 		return 0, errors.New("erro na preparacao: INSERT solicitacao")
 	}
 
-	res, errExec := stmt.Exec(servicoId, statusId, concluida, solicitanteId)
+	res, errExec := stmt.Exec(servicoId, statusId, concluida, solicitanteId, time.Now())
 	if errExec != nil {
 		return 0, errors.New("erro na execucao: INSERT solicitacao")
 	}
@@ -49,7 +50,8 @@ func (r *RepositorySolicitacao) BuscarPeloId(id uint) (solicitacao.Solicitacao, 
 	var statusId uint
 	var concluida bool
 	var solicitanteId uint
-	errScan := rowSolicitacao.Scan(&idSolicitacao, &servicoId, &statusId, &concluida, &solicitanteId)
+	var createdAt time.Time
+	errScan := rowSolicitacao.Scan(&idSolicitacao, &servicoId, &statusId, &concluida, &solicitanteId, &createdAt)
 	if errScan != nil {
 		return solicitacao.Solicitacao{}, errors.New("erro para busca informacoes solicitacao")
 	}
@@ -68,7 +70,7 @@ func (r *RepositorySolicitacao) BuscarPeloId(id uint) (solicitacao.Solicitacao, 
 	st.TendoStatusDesejado(statusId)
 
 	//Solicitacao retorno
-	ss := solicitacao.NovaSolicitacao(se, st, concluida, solicitanteId)
+	ss := solicitacao.NovaSolicitacao(se, st, concluida, solicitanteId, createdAt)
 	ss.SetandoId(idSolicitacao)
 
 	return *ss, nil

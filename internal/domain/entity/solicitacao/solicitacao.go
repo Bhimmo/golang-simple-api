@@ -1,6 +1,8 @@
 package solicitacao
 
 import (
+	"time"
+
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/servico"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/status"
 )
@@ -11,6 +13,7 @@ type Solicitacao struct {
 	status        status.Status
 	concluida     bool
 	solicitanteId uint
+	CreatedAt     time.Time
 }
 
 func NovaSolicitacao(
@@ -18,19 +21,20 @@ func NovaSolicitacao(
 	statusInput status.Status,
 	concluida bool,
 	solicitanteId uint,
+	createdAt time.Time,
 ) *Solicitacao {
 	return &Solicitacao{
 		servico:       servicoInput,
 		status:        statusInput,
 		concluida:     concluida,
 		solicitanteId: solicitanteId,
+		CreatedAt:     createdAt,
 	}
 }
 
 func (s *Solicitacao) EstaConcluida() {
 	s.concluida = true
 }
-
 func (s *Solicitacao) SetandoId(id uint) {
 	s.id = id
 }

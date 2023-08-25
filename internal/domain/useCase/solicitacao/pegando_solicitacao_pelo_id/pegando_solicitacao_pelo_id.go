@@ -62,6 +62,7 @@ func (s *PegandoSolicitacaoPeloId) Execute(id uint) (PegandoSolicitacaoPeloIdOut
 		},
 		Concluida:     solicitacaoBusca.VerificacaoSeEstaConcluida(),
 		SolicitanteId: solicitacaoBusca.PegandoSolicitanteId(),
+		CreatedAt:     solicitacaoBusca.CreatedAt,
 		Campos:        listaRetornoCampo,
 	}, nil
 }
