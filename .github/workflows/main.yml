@@ -16,7 +16,8 @@ jobs:
             go-version: '1.21.0'
 
         - name: Install dependencies
-          run: go get .
+          run: |
+            go get github.com/streadway/amqp@v1.1.0
 
         - name: Build
           run: go build -v ./...
