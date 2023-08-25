@@ -3,6 +3,7 @@ package solicitacao
 import (
 	"database/sql"
 	"errors"
+
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/servico"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/solicitacao"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/status"
@@ -50,7 +51,7 @@ func (r *RepositorySolicitacao) BuscarPeloId(id uint) (solicitacao.Solicitacao, 
 	var solicitanteId uint
 	errScan := rowSolicitacao.Scan(&idSolicitacao, &servicoId, &statusId, &concluida, &solicitanteId)
 	if errScan != nil {
-		return solicitacao.Solicitacao{}, errors.New("Erro para busca informacoes solicitacao")
+		return solicitacao.Solicitacao{}, errors.New("erro para busca informacoes solicitacao")
 	}
 
 	//Servico
@@ -58,7 +59,7 @@ func (r *RepositorySolicitacao) BuscarPeloId(id uint) (solicitacao.Solicitacao, 
 	rowServico := r.db.QueryRow("SELECT * FROM servico WHERE id = ?", servicoId)
 	errScanServico := rowServico.Scan(&servicoId, &nomeServico)
 	if errScanServico != nil {
-		return solicitacao.Solicitacao{}, errors.New("Erro para buscar informacoes do servico")
+		return solicitacao.Solicitacao{}, errors.New("erro para buscar informacoes do servico")
 	}
 	se := servico.Servico{Id: servicoId, Nome: nomeServico}
 

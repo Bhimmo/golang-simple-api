@@ -1,0 +1,22 @@
+name: Main
+
+on:
+    push:
+        branches: ['master']
+
+jobs:
+    build-app:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v3
+
+        - name: building
+          run: go build ./main.go
+
+    all-tests:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v3
+
+        - name: testing
+          run: go test ./...
