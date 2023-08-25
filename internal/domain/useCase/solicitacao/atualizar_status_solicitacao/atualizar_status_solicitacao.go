@@ -2,6 +2,7 @@ package atualizar_status_solicitacao
 
 import (
 	"errors"
+
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/solicitacao"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/status"
 	"github.com/Bhimmo/golang-simple-api/internal/infra/mensageria"
@@ -44,9 +45,17 @@ func (s *AtualizarStatusSolicitacao) Execute(id uint) (AtualizarStatusSolicitaca
 	)
 	EntitySolicitacao.SetandoId(solicitacaoBusca.PegandoId())
 
-	//Solicitacao concluida ?
-	if EntityStatus.VerificaUltimoStatus() {
+	//Solicitacao concluida e a solicitacao do banco nao pode estar como concluida
+	if EntityStatus.VerificaUltimoStatus() && !statusSolicitacaoBusca.VerificaUltimoStatus() {
 		EntitySolicitacao.EstaConcluida()
+	}
+
+	//Salvar no banco "update" caso ainda nao finalizado
+	if !statusSolicitacaoBusca.VerificaUltimoStatus() {
+		errUpdate := s.repositorySolicitacao.AtualizarSolicitacao(*EntitySolicitacao)
+		if errUpdate != nil {
+			return AtualizarStatusSolicitacaoOutput{}, errors.New("erro em atualizar solicitacao")
+		}
 		s.repositoryMensageria.EnviarEmail(
 			"EnviarEmail",
 			mensageria.MensagemEnviarRabbitmq{
@@ -54,14 +63,6 @@ func (s *AtualizarStatusSolicitacao) Execute(id uint) (AtualizarStatusSolicitaca
 				Conteudo:      "Solicitacao finalizada",
 			},
 		)
-	}
-
-	//Salvar no banco "update" caso ainda nao finalizado
-	if statusSolicitacaoBusca.VerificaUltimoStatus() == false {
-		errUpdate := s.repositorySolicitacao.AtualizarSolicitacao(*EntitySolicitacao)
-		if errUpdate != nil {
-			return AtualizarStatusSolicitacaoOutput{}, errors.New("Erro em atualizar solicitacao")
-		}
 	}
 
 	return AtualizarStatusSolicitacaoOutput{

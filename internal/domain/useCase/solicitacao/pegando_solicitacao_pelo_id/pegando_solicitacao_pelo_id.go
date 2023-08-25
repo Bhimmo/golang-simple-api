@@ -1,42 +1,50 @@
 package pegando_solicitacao_pelo_id
 
 import (
-	"errors"
-
+	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/solicitacao"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/entity/solicitacao_campo"
 )
 
 type PegandoSolicitacaoPeloId struct {
-	repositorySolicitacao solicitacao.InterfaceSolicitacaoRepository
-	repositoryCampo       solicitacao_campo.SolicitacaoCampoInterface
+	repositorySolicitacao      solicitacao.InterfaceSolicitacaoRepository
+	repositorySolicitacaoCampo solicitacao_campo.SolicitacaoCampoInterface
+	repositoryCampo            campo.InterfaceCampoRepository
 }
 
 func NovoPegandoSolicitacaoPeloId(
 	solicitacaoRepository solicitacao.InterfaceSolicitacaoRepository,
-	campoRepository solicitacao_campo.SolicitacaoCampoInterface,
+	campoSolicitacaoRepository solicitacao_campo.SolicitacaoCampoInterface,
+	campoRepository campo.InterfaceCampoRepository,
 ) *PegandoSolicitacaoPeloId {
 	return &PegandoSolicitacaoPeloId{
-		repositorySolicitacao: solicitacaoRepository,
-		repositoryCampo:       campoRepository,
+		repositorySolicitacao:      solicitacaoRepository,
+		repositorySolicitacaoCampo: campoSolicitacaoRepository,
+		repositoryCampo:            campoRepository,
 	}
 }
 
 func (s *PegandoSolicitacaoPeloId) Execute(id uint) (PegandoSolicitacaoPeloIdOutput, error) {
 	solicitacaoBusca, errBuscaSolicitacao := s.repositorySolicitacao.BuscarPeloId(id)
 	if errBuscaSolicitacao != nil {
-		return PegandoSolicitacaoPeloIdOutput{}, errors.New(errBuscaSolicitacao.Error())
+		return PegandoSolicitacaoPeloIdOutput{}, errBuscaSolicitacao
 	}
 	//Campos
-	campoBuscaLista, errBuscaCampo := s.repositoryCampo.BuscarCamposPelaSolicitacao(solicitacaoBusca.PegandoId())
+	campoBuscaLista, errBuscaCampo := s.repositorySolicitacaoCampo.BuscarCamposPelaSolicitacao(id)
 	if errBuscaCampo != nil {
-		return PegandoSolicitacaoPeloIdOutput{}, errors.New(errBuscaCampo.Error())
+		return PegandoSolicitacaoPeloIdOutput{}, errBuscaCampo
 	}
 
 	var listaRetornoCampo []PegandoSolicitacaoPeloIdCampoOutput
 	for _, itemCampo := range campoBuscaLista {
+		newCampo, errCampo := s.repositoryCampo.BuscarPeloId(itemCampo.CampoId)
+		if errCampo != nil {
+			return PegandoSolicitacaoPeloIdOutput{}, errCampo
+		}
+
 		newItemCampo := PegandoSolicitacaoPeloIdCampoOutput{
-			Id:    itemCampo.Id,
+			Id:    newCampo.Id,
+			Nome:  newCampo.Nome,
 			Valor: itemCampo.Valor,
 		}
 		listaRetornoCampo = append(listaRetornoCampo, newItemCampo)

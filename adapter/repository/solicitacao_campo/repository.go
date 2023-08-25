@@ -37,5 +37,25 @@ func (r *RepositorySolicitacaoCampo) SalvarCamposDaSolicitacao(
 func (r *RepositorySolicitacaoCampo) BuscarCamposPelaSolicitacao(
 	solicitacaoId uint,
 ) ([]solicitacao_campo.SolicitacaoCampo, error) {
-	return nil, nil
+	rows, errQuery := r.db.Query("select * from solicitacao_campo where solicitacaoId = ?", solicitacaoId)
+	if errQuery != nil {
+		return nil, errQuery
+	}
+
+	var listaSolicitacaCampo []solicitacao_campo.SolicitacaoCampo
+	for rows.Next() {
+		var itemSolicitacaoCampo solicitacao_campo.SolicitacaoCampo
+		errScan := rows.Scan(
+			&itemSolicitacaoCampo.Id,
+			&itemSolicitacaoCampo.CampoId,
+			&itemSolicitacaoCampo.Valor,
+			&itemSolicitacaoCampo.SolicitacaoId,
+		)
+		if errScan != nil {
+			return nil, errScan
+		}
+		listaSolicitacaCampo = append(listaSolicitacaCampo, itemSolicitacaoCampo)
+	}
+
+	return listaSolicitacaCampo, nil
 }

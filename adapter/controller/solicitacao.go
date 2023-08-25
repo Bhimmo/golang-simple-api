@@ -11,6 +11,7 @@ import (
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/solicitacao"
 	"github.com/Bhimmo/golang-simple-api/adapter/repository/solicitacao_campo"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/atualizar_status_solicitacao"
+	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/pegando_solicitacao_pelo_id"
 	"github.com/Bhimmo/golang-simple-api/internal/domain/useCase/solicitacao/salvar_solicitacao"
 	rabbitmq2 "github.com/Bhimmo/golang-simple-api/pkg/rabbitmq"
 	"github.com/Bhimmo/golang-simple-api/pkg/sqlite"
@@ -40,23 +41,23 @@ func SalvarSolicitacao(body []byte) ([]byte, int) {
 }
 
 func PegandoSolicitacaoPeloId(id string) ([]byte, int) {
-	// idInt, errConv := strconv.Atoi(id)
-	// if errConv != nil {
-	// 	return []byte("params invalidos"), http.StatusBadRequest
-	// }
+	idInt, errConv := strconv.Atoi(id)
+	if errConv != nil {
+		return []byte("params invalidos"), http.StatusBadRequest
+	}
 
-	// r := solicitacao.NovoRepositorySolicitacao(sqlite.Db)
-	// rc := campo.NovoRepositoryCampo(sqlite.Db)
-	// useCase := pegando_solicitacao_pelo_id.NovoPegandoSolicitacaoPeloId(r, rc)
+	r := solicitacao.NovoRepositorySolicitacao(sqlite.Db)
+	rc := campo.NovoRepositoryCampo(sqlite.Db)
+	rsc := solicitacao_campo.NewRepositorySolicitacaoCampo(sqlite.Db)
+	useCase := pegando_solicitacao_pelo_id.NovoPegandoSolicitacaoPeloId(r, rsc, rc)
 
-	// result, errUseCase := useCase.Execute(uint(idInt))
-	// if errUseCase != nil {
-	// 	return []byte(errUseCase.Error()), http.StatusInternalServerError
-	// }
+	result, errUseCase := useCase.Execute(uint(idInt))
+	if errUseCase != nil {
+		return []byte(errUseCase.Error()), http.StatusInternalServerError
+	}
 
-	// re, _ := json.Marshal(&result)
-	// return re, http.StatusOK
-	return []byte("BOM DIA"), http.StatusOK
+	re, _ := json.Marshal(&result)
+	return re, http.StatusOK
 }
 
 func AtualizandoStatusSolicitacao(id string) ([]byte, int) {

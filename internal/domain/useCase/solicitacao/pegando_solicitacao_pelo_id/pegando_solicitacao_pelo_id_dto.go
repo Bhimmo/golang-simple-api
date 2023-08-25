@@ -19,5 +19,6 @@ type PegandoSolicitacaoPeloIdStatusOutput struct {
 }
 type PegandoSolicitacaoPeloIdCampoOutput struct {
 	Id    uint   `json:"id"`
+	Nome  string `json:"nome"`
 	Valor string `json:"valor"`
 }
