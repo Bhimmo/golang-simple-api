@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	my_middleware "github.com/Bhimmo/golang-simple-api/adapter/middleware"
 	"github.com/Bhimmo/golang-simple-api/adapter/routes"
@@ -35,8 +36,12 @@ func main() {
 	//Routes
 	configRoutes(r)
 
-	fmt.Println("Start api")
-	http.ListenAndServe(":3000", r)
+	addr := os.Getenv("PORT")
+	if addr == "" {
+		addr = ":3000"
+	}
+	fmt.Println("Start api: lister on -> " + addr)
+	http.ListenAndServe(addr, r)
 }
 
 func configRoutes(r *chi.Mux) {
