@@ -30,3 +30,11 @@ func GenerateJWT(username string, email string) string {
 
 	return tokenString
 }
+
+func ValidToken(token string) bool {
+	claims := &Claims{}
+	tkn, _ := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	return tkn.Valid
+}

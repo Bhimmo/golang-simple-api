@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"net/mail"
 
 	"github.com/Bhimmo/golang-simple-api/pkg/auth"
 )
@@ -30,7 +31,19 @@ func AccessToken(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &bodyInput)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("username error"))
+		w.Write([]byte("body error"))
+		return
+	}
+
+	if bodyInput.Username == "" || bodyInput.Email == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("credential invalid: username and email"))
+		return
+	}
+	_, err = mail.ParseAddress(bodyInput.Email)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("credential invalid: email invalid"))
 		return
 	}
 

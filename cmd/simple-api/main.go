@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	my_middleware "github.com/Bhimmo/golang-simple-api/adapter/middleware"
 	"github.com/Bhimmo/golang-simple-api/adapter/routes"
 	"github.com/Bhimmo/golang-simple-api/pkg/rabbitmq"
 	"github.com/Bhimmo/golang-simple-api/pkg/sqlite"
@@ -18,7 +19,6 @@ func main() {
 	if errEnv != nil {
 		panic("Erro ao carregar variaveis de ambiente")
 	}
-
 	//Init database conection
 	sqlite.Init()
 
@@ -32,23 +32,32 @@ func main() {
 
 	//Auth
 	r.Post("/access-token", routes.AccessToken)
-
-	//Servico
-	r.Post("/servico", routes.NovoServico)
-	r.Get("/servico/{id}", routes.PegandoServicoPeloId)
-	r.Post("/servico/campos", routes.AdicionandoCampos)
-	r.Get("/servico/{id}/campos", routes.PegandoCampos)
-
-	//Campo
-	r.Get("/campo", routes.TodosCampos)
-	r.Post("/campo", routes.NovoCampo)
-	r.Get("/campo/{id}", routes.PegandoCampoById)
-
-	//Solicitacao
-	r.Post("/solicitacao", routes.SalvarSolicitacao)
-	r.Get("/solicitacao/{id}", routes.PegandoSolicitacaoPeloId)
-	r.Get("/solicitacao/{id}/atualizar-status", routes.AtualizarStatusSolicitacao)
+	//Routes
+	configRoutes(r)
 
 	fmt.Println("Start api")
 	http.ListenAndServe(":3000", r)
+}
+
+func configRoutes(r *chi.Mux) {
+	r.Group(func(r chi.Router) {
+		//Validacao do token
+		r.Use(my_middleware.ValidToken)
+
+		//Campos
+		r.Get("/campo", routes.TodosCampos)
+		r.Post("/campo", routes.NovoCampo)
+		r.Get("/campo/{id}", routes.PegandoCampoById)
+
+		//Servico
+		r.Post("/servico", routes.NovoServico)
+		r.Get("/servico/{id}", routes.PegandoServicoPeloId)
+		r.Post("/servico/campos", routes.AdicionandoCampos)
+		r.Get("/servico/{id}/campos", routes.PegandoCampos)
+
+		//Solicitacao
+		r.Post("/solicitacao", routes.SalvarSolicitacao)
+		r.Get("/solicitacao/{id}", routes.PegandoSolicitacaoPeloId)
+		r.Get("/solicitacao/{id}/atualizar-status", routes.AtualizarStatusSolicitacao)
+	})
 }
